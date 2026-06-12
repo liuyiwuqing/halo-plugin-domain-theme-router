@@ -1,72 +1,44 @@
-# 🎨 Domain Theme Router
+# Domain Theme Router 用户指南
 
-> **一套内容，无限可能** —— 让你的 Halo 站点在不同域名下展现不同风采
+## 一句话介绍
 
-[![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
-[![Halo Version](https://img.shields.io/badge/Halo-2.24.0+-green.svg)](https://halo.run)
+**一个域名，一套内容，多种主题** —— 让你的 Halo 站点在不同域名下展示不同风格的前台主题。
 
 ---
 
-## 🚀 这是什么？
+## 这是什么？
 
 Domain Theme Router 是一个 Halo CMS 插件，它可以让你：
 
-- ✅ 为同一个 Halo 站点配置多个域名
-- ✅ 每个域名绑定不同的前台主题
-- ✅ 所有域名共享相同的文章、页面、菜单和后台管理
+- 为同一个 Halo 站点配置多个域名
+- 每个域名绑定不同的前台主题
+- 所有域名共享相同的文章、页面、菜单和后台管理
 
 **简单来说**：你有两篇文章，但想在 `blog.example.com` 用简约风格，在 `news.example.com` 用新闻风格。这个插件就能帮你实现！
 
 ---
 
-## ✨ 核心亮点
+## 适用场景
 
-### 🎯 一石多鸟
-一套内容，多个域名，不同主题。无需重复发布，无需多站点管理。
+### 1. 多品牌/多站点内容分发
+- 同一套内容，面向不同受众群体
+- 例如：企业官网 + 技术博客，内容相同但风格不同
 
-### ⚡ 极速体验
-基于 WebFilter 实现，请求处理性能影响微乎其微。用户无感知，体验零延迟。
+### 2. A/B 测试
+- 同一内容，不同主题风格
+- 测试哪种设计更能吸引用户
 
-### 🔌 即插即用
-无需修改代码，无需复杂配置。安装插件，配置域名，立即生效。
+### 3. 临时活动页
+- 活动期间临时切换主题风格
+- 活动结束后恢复原主题
 
-### 🛡️ 稳定可靠
-智能主题验证，自动回退机制。主题不可用时，自动切换到默认主题，确保站点始终可用。
-
----
-
-## 📖 使用场景
-
-### 🏢 企业多品牌运营
-```
-brand-a.com → 商务风格主题
-brand-b.com → 科技风格主题  
-brand-c.com → 创意风格主题
-```
-
-### 📰 内容分发网络
-```
-news.example.com → 新闻资讯风格
-blog.example.com → 个人博客风格
-docs.example.com → 文档中心风格
-```
-
-### 🧪 A/B 测试
-```
-v1.example.com → 主题 A
-v2.example.com → 主题 B
-```
-
-### 🌍 多地区站点
-```
-cn.example.com → 中国风主题
-us.example.com → 欧美风主题
-jp.example.com → 日系风格主题
-```
+### 4. 多语言/多地区站点
+- 不同域名对应不同地区风格
+- 例如：`cn.example.com` 中文风格，`en.example.com` 英文风格
 
 ---
 
-## 🛠️ 快速开始
+## 快速开始
 
 ### 1. 安装插件
 
@@ -113,7 +85,7 @@ server {
 
 ---
 
-## 💡 工作原理
+## 工作原理
 
 ```
 用户访问域名
@@ -131,9 +103,16 @@ server {
 └─────────────────────────────────────┘
 ```
 
+### 关键特性
+
+- **智能域名匹配**：自动忽略端口号，统一转小写，支持带协议的域名格式
+- **主题验证**：自动检测绑定的主题是否可用，不可用时自动回退
+- **高性能**：使用 WebFilter 实现，对请求性能影响极小
+- **无侵入**：不影响 Halo 后台管理，所有域名共享同一后台
+
 ---
 
-## ⚙️ 配置说明
+## 配置说明
 
 ### 域名格式
 
@@ -154,19 +133,7 @@ server {
 
 ---
 
-## 📋 技术规格
-
-| 项目 | 说明 |
-|-----|------|
-| 最低 Halo 版本 | 2.24.0+ |
-| Java 版本 | 21+ |
-| 存储方式 | 插件设置表单 |
-| 匹配方式 | 精确域名匹配 |
-| 性能影响 | 极小（WebFilter 实现） |
-
----
-
-## ❓ 常见问题
+## 常见问题
 
 ### Q: 为什么访问域名后还是显示默认主题？
 
@@ -195,79 +162,55 @@ server {
 
 ---
 
-## 🔧 开发环境
+## 技术规格
 
-### 环境要求
-
-- Java 21+
-- Node.js 18+
-- pnpm
-- Halo 2.24.0+
-
-### 开发命令
-
-```bash
-# 构建插件
-./gradlew build
-
-# 开发前端
-cd ui
-pnpm install
-pnpm dev
-
-# 运行测试
-./gradlew test
-```
-
-### 本地调试
-
-```bash
-# 启动 Halo 开发服务器
-./gradlew haloStart
-
-# 访问 Halo 后台
-# http://localhost:8181/console
-```
+| 项目 | 说明 |
+|-----|------|
+| 最低 Halo 版本 | 2.24.0+ |
+| Java 版本 | 21+ |
+| 存储方式 | 插件设置表单 |
+| 匹配方式 | 精确域名匹配 |
+| 性能影响 | 极小（WebFilter 实现） |
 
 ---
 
-## 📚 文档资源
+## 注意事项
 
-- [📖 用户指南](./docs/USER_GUIDE.md) - 详细使用说明
-- [🏗️ 技术架构](./docs/ARCHITECTURE.md) - 技术实现细节
-- [📢 宣传文档](./docs/PROMOTION.md) - 面向用户的宣传材料
-- [📝 ADR 文档](./docs/adr/) - 架构决策记录
-
----
-
-## 🤝 参与贡献
-
-我们欢迎所有形式的贡献！
-
-- 🐛 报告 Bug
-- 💡 提出新功能建议
-- 📖 完善文档
-- 🔧 提交代码
+1. **域名解析**：确保所有域名都正确解析到你的 Halo 服务器
+2. **HTTPS**：生产环境建议使用 HTTPS，确保证书覆盖所有域名
+3. **反向代理**：正确配置 `X-Forwarded-Host` 请求头
+4. **主题兼容性**：不同主题的自定义配置可能不同，需要分别设置
+5. **缓存**：如果使用了 CDN，确保缓存策略考虑了不同域名的情况
 
 ---
 
-## 📄 许可证
+## 更新日志
 
-[GPL-3.0](./LICENSE) © Muyin
-
----
-
-## 📞 联系我们
-
-- GitHub: [muyin-dev/halo-plugin-domain-theme-router](https://github.com/muyin-dev/halo-plugin-domain-theme-router)
-- Issues: [问题反馈](https://github.com/muyin-dev/halo-plugin-domain-theme-router/issues)
+### v1.0.0
+- 初始版本发布
+- 支持精确域名到主题的绑定
+- 支持自动回退到默认主题
+- 插件设置页面配置管理
 
 ---
 
-<div align="center">
+## 许可证
 
-**🚀 立即体验，释放 Halo 的无限可能！**
+[GPL-3.0](../LICENSE) © Muyin
 
-[下载最新版本](https://github.com/muyin-dev/halo-plugin-domain-theme-router/releases/latest) | [查看文档](./docs/USER_GUIDE.md) | [反馈问题](https://github.com/muyin-dev/halo-plugin-domain-theme-router/issues)
+---
 
-</div>
+## 获取帮助
+
+- 问题反馈：[GitHub Issues](https://github.com/muyin-dev/halo-plugin-domain-theme-router/issues)
+- 文档：[项目文档](./README.md)
+
+---
+
+## 贡献者
+
+感谢所有为这个项目做出贡献的人！
+
+---
+
+*Domain Theme Router - 让你的 Halo 站点更灵活！*
