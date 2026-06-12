@@ -1,7 +1,7 @@
 package site.muyin.domainthemerouter.service;
 
 import org.junit.jupiter.api.Test;
-import site.muyin.domainthemerouter.scheme.DomainThemeRoute;
+import site.muyin.domainthemerouter.model.DomainThemeRoute;
 
 import java.util.List;
 import java.util.Optional;

@@ -13,21 +13,25 @@
 
 ## 实现方式
 
-- 绑定数据存储为 `DomainThemeRoute` 扩展资源，接口路径为 `/apis/domain-theme-router.muyin.site/v1alpha1/domainThemeRoutes`。
-- 控制台页面路径为 `/domain-theme-router`，可管理域名、主题、启用状态和备注。
+- 绑定数据存储在插件设置表单中，配置分组为 `routes`，字段为 `bindings` 数组。
+- 插件设置入口使用 Halo 插件详情页的配置表单，不再提供独立控制台管理页。
+- 每条绑定包含访问域名、绑定主题、启用状态和备注。
 - 运行时通过 `AdditionalWebFilter` 读取 `X-Forwarded-Host`，没有该请求头时读取 `Host`。
-- 命中启用绑定后，插件会在请求级别覆盖 Halo 的主题上下文；未命中或覆盖失败时回退 Halo 当前激活主题。
+- 命中启用绑定且目标主题存在后，插件会写入请求级 `ThemeContext` 并将其标记为当前请求的活跃主题，避免菜单等站内链接暴露 `preview-theme`。
+- 如果无法构造 Halo 请求级主题上下文，会降级为 Halo 原生主题预览参数 `preview-theme=<themeName>`；未命中或降级也失败时回退 Halo 当前激活主题。
 
 ## 架构记录
 
 - [0001-domain-theme-routing-is-not-multi-site](./docs/adr/0001-domain-theme-routing-is-not-multi-site.md)
-- [0002-use-request-theme-context-override](./docs/adr/0002-use-request-theme-context-override.md)
+- [0002-use-request-theme-context-with-preview-fallback](./docs/adr/0002-use-request-theme-context-with-preview-fallback.md)
 
 ## 注意事项
 
 - 域名匹配会忽略端口并统一转小写。
+- 绑定里的域名可以填写裸域名或带协议的地址，运行时会统一规范化后做精确匹配。
+- 绑定主题通过设置表单远程读取已安装 Halo 主题；如果主题被卸载或不可用，运行时自动回退当前激活主题。
 - 生产环境使用 Nginx、CDN 或网关时，需要正确传递 `X-Forwarded-Host`。
-- 当前实现依赖 Halo 2.24 的请求级主题上下文契约；如果 Halo 后续调整主题渲染内部 API，需要复测适配器。
+- 当前实现优先使用请求级 `ThemeContext`，降级时才复用 Halo 的主题预览参数 `preview-theme`；如果系统设置禁用了匿名主题预览，降级路径下的未登录访问可能会回退当前激活主题。
 
 ## 开发环境
 

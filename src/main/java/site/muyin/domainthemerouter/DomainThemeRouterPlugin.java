@@ -1,12 +1,8 @@
 package site.muyin.domainthemerouter;
 
 import org.springframework.stereotype.Component;
-import run.halo.app.extension.Scheme;
-import run.halo.app.extension.SchemeManager;
-import run.halo.app.extension.index.IndexSpecs;
 import run.halo.app.plugin.BasePlugin;
 import run.halo.app.plugin.PluginContext;
-import site.muyin.domainthemerouter.scheme.DomainThemeRoute;
 
 /**
  * <p>Plugin main class to manage the lifecycle of the plugin.</p>
@@ -19,28 +15,7 @@ import site.muyin.domainthemerouter.scheme.DomainThemeRoute;
 @Component
 public class DomainThemeRouterPlugin extends BasePlugin {
 
-    private final SchemeManager schemeManager;
-
-    public DomainThemeRouterPlugin(PluginContext pluginContext, SchemeManager schemeManager) {
+    public DomainThemeRouterPlugin(PluginContext pluginContext) {
         super(pluginContext);
-        this.schemeManager = schemeManager;
-    }
-
-    @Override
-    public void start() {
-        schemeManager.register(DomainThemeRoute.class, indexSpecs -> {
-            indexSpecs.add(IndexSpecs.<DomainThemeRoute, String>single("domain", String.class)
-                    .unique(true)
-                    .indexFunc(DomainThemeRoute::getDomain));
-            indexSpecs.add(IndexSpecs.<DomainThemeRoute, String>single("themeName", String.class)
-                    .indexFunc(DomainThemeRoute::getThemeName));
-            indexSpecs.add(IndexSpecs.<DomainThemeRoute, Boolean>single("enabled", Boolean.class)
-                    .indexFunc(DomainThemeRoute::getEnabled));
-        });
-    }
-
-    @Override
-    public void stop() {
-        schemeManager.unregister(Scheme.buildFromType(DomainThemeRoute.class));
     }
 }

@@ -1,0 +1,55 @@
+apiVersion: v1alpha1
+kind: Setting
+metadata:
+  name: domain-theme-router-settings
+spec:
+  forms:
+    - group: routes
+      label: 域名主题绑定
+      formSchema:
+        - $formkit: array
+          name: bindings
+          label: 绑定列表
+          value: []
+          min: 0
+          addLabel: 添加绑定
+          itemLabels:
+            - type: text
+              label: $value.domain
+            - type: text
+              label: $value.themeName
+          children:
+            - $formkit: text
+              name: domain
+              label: 访问域名
+              help: 只填写域名即可，端口会在匹配时忽略，例如 demo.muyin.site。
+              value: ""
+              validation: required
+            - $formkit: select
+              name: themeName
+              label: 绑定主题
+              help: 请求命中该域名时使用的 Halo 主题；主题不存在时自动回退当前激活主题。
+              value: ""
+              validation: required
+              clearable: true
+              searchable: true
+              action: /apis/theme.halo.run/v1alpha1/themes
+              requestOption:
+                method: GET
+                pageField: page
+                sizeField: size
+                totalField: total
+                itemsField: items
+                labelField: spec.displayName
+                valueField: metadata.name
+                iconField: spec.logo
+                descriptionField: spec.description
+                fieldSelectorKey: metadata.name
+            - $formkit: switch
+              name: enabled
+              label: 启用
+              value: true
+            - $formkit: text
+              name: remark
+              label: 备注
+              value: ""

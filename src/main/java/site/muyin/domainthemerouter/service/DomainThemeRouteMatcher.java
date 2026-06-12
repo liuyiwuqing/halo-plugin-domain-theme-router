@@ -2,7 +2,7 @@ package site.muyin.domainthemerouter.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import site.muyin.domainthemerouter.scheme.DomainThemeRoute;
+import site.muyin.domainthemerouter.model.DomainThemeRoute;
 
 import java.net.URI;
 import java.util.Collections;

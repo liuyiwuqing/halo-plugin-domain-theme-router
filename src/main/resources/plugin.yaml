@@ -9,14 +9,16 @@ spec:
   enabled: true
   requires: ">=2.24.0"
   author:
-    name: Muyin
+    name: Lywq
     website: https://blog.muyin.site
   logo: logo.svg
   homepage: https://blog.muyin.site
-  repo: https://github.com/muyin/halo-plugin-domain-theme-router
-  issues: https://github.com/muyin/halo-plugin-domain-theme-router/issues
+  repo: https://github.com/liuyiwuqing/plugin-domain-theme-router
+  issues: https://github.com/liuyiwuqing/plugin-domain-theme-router/issues
   displayName: "域名主题路由"
   description: "根据访问域名为 Halo 前台请求选择已安装主题，未命中时回退当前激活主题。"
+  settingName: domain-theme-router-settings
+  configMapName: domain-theme-router-configmap
   license:
     - name: "GPL-3.0"
-      url: "https://github.com/muyin/halo-plugin-domain-theme-router/blob/main/LICENSE"
+      url: "https://github.com/liuyiwuqing/plugin-domain-theme-router/blob/main/LICENSE"
