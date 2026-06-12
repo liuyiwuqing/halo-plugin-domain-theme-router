@@ -19,6 +19,12 @@ Domain Theme Router 是一个 Halo CMS 插件，它可以让你：
 
 ---
 
+## 交流群
+
+[点击链接加入群聊【halo博客-lywq插件】](https://qm.qq.com/q/wuC7NZr0sw)
+
+<img src="https://github.com/user-attachments/assets/bf162401-07fd-49ec-b50f-5218c9510937" style="height: 400px !important; width: auto; object-fit: contain;" />
+
 ## ✨ 核心亮点
 
 ### 🎯 一石多鸟
