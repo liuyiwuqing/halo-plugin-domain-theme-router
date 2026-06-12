@@ -16,7 +16,7 @@ spec:
   repo: https://github.com/liuyiwuqing/plugin-domain-theme-router
   issues: https://github.com/liuyiwuqing/plugin-domain-theme-router/issues
   displayName: "域名主题路由"
-  description: "根据访问域名为 Halo 前台请求选择已安装主题，未命中时回退当前激活主题。"
+  description: "一套内容，无限可能 —— 让你的 Halo 站点在不同域名下展现不同主题的风采"
   settingName: domain-theme-router-settings
   configMapName: domain-theme-router-configmap
   license:

@@ -202,7 +202,7 @@ server {
 
 ## 获取帮助
 
-- 问题反馈：[GitHub Issues](https://github.com/muyin-dev/halo-plugin-domain-theme-router/issues)
+- 问题反馈：[GitHub Issues](https://github.com/liuyiwuqing/plugin-domain-theme-router/issues)
 - 文档：[项目文档](./README.md)
 
 ---

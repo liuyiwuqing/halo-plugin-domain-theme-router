@@ -259,8 +259,8 @@ pnpm dev
 
 ## 📞 联系我们
 
-- GitHub: [muyin-dev/halo-plugin-domain-theme-router](https://github.com/muyin-dev/halo-plugin-domain-theme-router)
-- Issues: [问题反馈](https://github.com/muyin-dev/halo-plugin-domain-theme-router/issues)
+- GitHub: [liuyiwuqing/plugin-domain-theme-router](https://github.com/liuyiwuqing/plugin-domain-theme-router)
+- Issues: [问题反馈](https://github.com/liuyiwuqing/plugin-domain-theme-router/issues)
 
 ---
 
@@ -268,6 +268,6 @@ pnpm dev
 
 **🚀 立即体验，释放 Halo 的无限可能！**
 
-[下载最新版本](https://github.com/muyin-dev/halo-plugin-domain-theme-router/releases/latest) | [查看文档](./docs/USER_GUIDE.md) | [反馈问题](https://github.com/muyin-dev/halo-plugin-domain-theme-router/issues)
+[下载最新版本](https://github.com/liuyiwuqing/plugin-domain-theme-router/releases/latest) | [查看文档](./docs/USER_GUIDE.md) | [反馈问题](https://github.com/liuyiwuqing/plugin-domain-theme-router/issues)
 
 </div>
