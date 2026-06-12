@@ -1,0 +1,22 @@
+# Refer https://docs.halo.run/developer-guide/plugin/basics/manifest
+
+apiVersion: plugin.halo.run/v1alpha1
+kind: Plugin
+metadata:
+  # The name defines how the plugin is invoked, A unique name
+  name: domain-theme-router
+spec:
+  enabled: true
+  requires: ">=2.24.0"
+  author:
+    name: Muyin
+    website: https://blog.muyin.site
+  logo: logo.svg
+  homepage: https://blog.muyin.site
+  repo: https://github.com/muyin/halo-plugin-domain-theme-router
+  issues: https://github.com/muyin/halo-plugin-domain-theme-router/issues
+  displayName: "域名主题路由"
+  description: "根据访问域名为 Halo 前台请求选择已安装主题，未命中时回退当前激活主题。"
+  license:
+    - name: "GPL-3.0"
+      url: "https://github.com/muyin/halo-plugin-domain-theme-router/blob/main/LICENSE"

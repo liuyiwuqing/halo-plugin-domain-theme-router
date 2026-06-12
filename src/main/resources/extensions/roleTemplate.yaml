@@ -1,0 +1,30 @@
+kind: Role
+apiVersion: v1alpha1
+metadata:
+  name: rt-console.domain-theme-router.muyin.site
+  labels:
+    halo.run/role-template: "true"
+  annotations:
+    rbac.authorization.halo.run/ui-permissions: |
+      ["plugin:domain-theme-router:manage"]
+    rbac.authorization.halo.run/display-name: "域名主题路由管理"
+    rbac.authorization.halo.run/module: "域名主题路由"
+rules:
+  - apiGroups:
+      - domain-theme-router.muyin.site
+    resources:
+      - domainThemeRoutes
+    verbs:
+      - get
+      - list
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - theme.halo.run
+    resources:
+      - themes
+    verbs:
+      - get
+      - list
