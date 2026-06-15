@@ -259,7 +259,7 @@ pnpm dev
 
 ## 📄 许可证
 
-[GPL-3.0](./LICENSE) © Muyin
+[GPL-3.0](./LICENSE) © liuyiwuqing
 
 ---
 
