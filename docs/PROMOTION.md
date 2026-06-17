@@ -136,7 +136,7 @@ jp.example.com → 日系风格主题
 
 ```bash
 # 1. 下载插件
-wget https://github.com/liuyiwuqing/plugin-domain-theme-router/releases/latest/download/plugin-domain-theme-router.jar
+wget https://github.com/liuyiwuqing/halo-plugin-domain-theme-router/releases/latest/download/plugin-domain-theme-router.jar
 
 # 2. 安装插件（在 Halo 后台上传）
 # 后台 → 插件 → 安装插件 → 上传 jar 文件
@@ -211,7 +211,7 @@ bindings:
 - [📖 用户指南](./USER_GUIDE.md) - 详细使用说明
 - [📋 README](./README.md) - 项目介绍
 - [📝 ADR 文档](./docs/adr/) - 架构决策记录
-- [🐛 问题反馈](https://github.com/liuyiwuqing/plugin-domain-theme-router/issues)
+- [🐛 问题反馈](https://github.com/liuyiwuqing/halo-plugin-domain-theme-router/issues)
 
 ---
 
@@ -228,8 +228,8 @@ bindings:
 
 ## 📞 联系我们
 
-- GitHub: [liuyiwuqing/plugin-domain-theme-router](https://github.com/liuyiwuqing/plugin-domain-theme-router)
-- Issues: [问题反馈](https://github.com/liuyiwuqing/plugin-domain-theme-router/issues)
+- GitHub: [liuyiwuqing/halo-plugin-domain-theme-router](https://github.com/liuyiwuqing/halo-plugin-domain-theme-router)
+- Issues: [问题反馈](https://github.com/liuyiwuqing/halo-plugin-domain-theme-router/issues)
 
 ---
 
@@ -243,6 +243,6 @@ bindings:
 
 **🚀 立即体验，释放 Halo 的无限可能！**
 
-[下载最新版本](https://github.com/liuyiwuqing/plugin-domain-theme-router/releases/latest) | [查看文档](./USER_GUIDE.md) | [反馈问题](https://github.com/liuyiwuqing/plugin-domain-theme-router/issues)
+[下载最新版本](https://github.com/liuyiwuqing/halo-plugin-domain-theme-router/releases/latest) | [查看文档](./USER_GUIDE.md) | [反馈问题](https://github.com/liuyiwuqing/halo-plugin-domain-theme-router/issues)
 
 </div>
