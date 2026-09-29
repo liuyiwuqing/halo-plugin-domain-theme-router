@@ -80,6 +80,8 @@ server {
 }
 ```
 
+**多个域名共用同一个 Nginx / OpenResty / 1Panel 站点时，`X-Forwarded-Host` 必须使用 `$host`，不能使用 `$server_name` 或固定的主域名。** 例如 `server_name blog.example.com shop.example.com;` 中，`$server_name` 是该 server 配置的首个名称，访问 `shop.example.com` 时也可能向 Halo 传入 `blog.example.com`。插件优先读取 `X-Forwarded-Host`，因此即使 `Host $host` 正确，错误的转发头仍会让主题和菜单绑定一起失效。修正后检查 Nginx 配置并重载，无需重建 Halo 绑定或修改主题。
+
 ### 4. 验证配置
 
 访问你配置的域名，检查是否显示了对应的主题。
