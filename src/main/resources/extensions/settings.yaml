@@ -45,6 +45,23 @@ spec:
                 iconField: spec.logo
                 descriptionField: spec.description
                 fieldSelectorKey: metadata.name
+            - $formkit: select
+              name: menuName
+              label: 绑定菜单（可选）
+              help: 无需修改主题，自动替换该域名页面的主菜单；留空或菜单已删除时使用原生主菜单。不影响主题显式指定的其他菜单。
+              value: ""
+              clearable: true
+              searchable: true
+              action: /api/v1alpha1/menus
+              requestOption:
+                method: GET
+                pageField: page
+                sizeField: size
+                totalField: total
+                itemsField: items
+                labelField: spec.displayName
+                valueField: metadata.name
+                fieldSelectorKey: metadata.name
             - $formkit: switch
               name: enabled
               label: 启用

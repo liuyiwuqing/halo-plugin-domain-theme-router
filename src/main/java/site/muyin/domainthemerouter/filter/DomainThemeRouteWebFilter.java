@@ -13,6 +13,8 @@ import reactor.core.publisher.Mono;
 import run.halo.app.core.extension.Theme;
 import run.halo.app.extension.ReactiveExtensionClient;
 import run.halo.app.security.AdditionalWebFilter;
+import site.muyin.domainthemerouter.menu.DomainMenuBinding;
+import site.muyin.domainthemerouter.model.DomainThemeRoute;
 import site.muyin.domainthemerouter.service.DomainThemeRouteMatcher;
 import site.muyin.domainthemerouter.service.DomainThemeRouteService;
 import site.muyin.domainthemerouter.theme.HaloThemeContextFactory;
@@ -63,7 +65,7 @@ public class DomainThemeRouteWebFilter implements AdditionalWebFilter {
 
         return routeService.listEnabledRoutesAsList()
                 .flatMap(routes -> routeMatcher.match(requestDomain, routes)
-                        .map(route -> applyThemePreview(exchange, route.getThemeName()))
+                        .map(route -> applyThemePreview(exchange, route))
                         .orElseGet(() -> Mono.just(exchange)))
                 .onErrorResume(error -> {
                     log.warn("Failed to resolve domain theme route, fallback to activated theme.", error);
@@ -77,12 +79,21 @@ public class DomainThemeRouteWebFilter implements AdditionalWebFilter {
         return Ordered.HIGHEST_PRECEDENCE + 100;
     }
 
-    private Mono<ServerWebExchange> applyThemePreview(ServerWebExchange exchange, String themeName) {
+    private Mono<ServerWebExchange> applyThemePreview(ServerWebExchange exchange, DomainThemeRoute route) {
+        var themeName = route.getThemeName();
         if (StringUtils.isBlank(themeName)) {
             return Mono.just(exchange);
         }
         return client.fetch(Theme.class, themeName)
-                .map(theme -> withDomainTheme(exchange, theme))
+                .map(theme -> {
+                    var resolvedExchange = withDomainTheme(exchange, theme);
+                    var menuName = StringUtils.trimToNull(route.getMenuName());
+                    if (menuName != null) {
+                        resolvedExchange.getAttributes().put(DomainMenuBinding.ATTRIBUTE,
+                                new DomainMenuBinding(menuName));
+                    }
+                    return resolvedExchange;
+                })
                 .switchIfEmpty(Mono.fromSupplier(() -> {
                     log.warn("Domain theme route matched missing theme {}, fallback to activated theme.",
                             themeName);
