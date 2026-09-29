@@ -212,6 +212,8 @@ public interface DomainThemeRouteService {
 
 `menu/HaloMenuModelBridge` 通过 Halo 注入的 `PluginWrapper` 获取插件管理器，并桥接其 `getRootContext()` 获取根上下文，以独立 Bean 名注册 `ViewContextBasedVariablesAcquirer` 动态代理。该 SPI 位于 application 模块，故按名称桥接，不打包 Halo application 类。插件上下文关闭时只注销自己注册的实例；接口不兼容时记录错误并保留原有域名主题路由。
 
+`getRootContext()` 必须从公开的 `SpringPluginManager` 接口获取反射方法。真实 `HaloPluginManager` 实现类是包可见的，直接对实现类反射调用其 public 方法仍会触发 `IllegalAccessException`。回归测试使用不同包中的非公开实现类复现该访问限制，不能只使用公开的模拟实现。
+
 `menu/DomainMenuModelProvider` 仅为具有菜单绑定的请求返回 `menuFinder` 模型变量。Halo 每次渲染查询变量提供者，模型变量覆盖视图的同名静态 Finder，因此无需修改主题和清理主题缓存。未绑定请求返回空模型。
 
 `menu/RequestMenuFinder` 是每次渲染独立创建的代理：`getPrimary()` 调用原生 Finder 的 `getByName(menuName)`，菜单缺失/读取失败则调用原生 `getPrimary()`；其他显式 `getByName(name)` 保持原样。原生主菜单的错误/空结果保持原语义。

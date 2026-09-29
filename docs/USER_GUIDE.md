@@ -153,7 +153,28 @@ server {
 
 ## 常见问题
 
+### Q: 选了绑定菜单，但仍显示全站原菜单？
+
+先查看插件启用后的日志。正常注册时会输出：
+
+```text
+Automatic domain menu binding registered successfully.
+```
+
+早期菜单绑定实现从非公开的 `HaloPluginManager` 实现类调用 `getRootContext()`，可能出现
+`IllegalAccessException` 并输出 `Automatic domain menu binding is unavailable`，导致菜单绑定未生效。
+修复版通过公开的 `SpringPluginManager` 接口调用；更新插件并重新启用后确认上述成功日志，原绑定配置无需重建。
+
+若桥接已成功注册，检查绑定是否启用、菜单是否存在，以及主题是否通过原生主菜单接口读取导航。
+若连页面主题外观也没有切换，应按下一条检查域名匹配和主题配置；菜单桥接注册失败本身不会停用域名主题路由。
+
 ### Q: 为什么访问域名后还是显示默认主题？
+
+如果配置检查后仍无法定位，可临时将 Halo 的日志级别
+`logging.level.site.muyin.domainthemerouter` 设为 `DEBUG`，然后访问一次绑定域名。
+Docker 环境变量写法为 `LOGGING_LEVEL_SITE_MUYIN_DOMAINTHEMEROUTER=DEBUG`（修改后需重建 Halo 容器以应用环境变量）。
+相关日志包含 `Domain theme request`、`Domain theme binding matched` / `No domain theme binding matched`，以及使用请求主题上下文或预览降级的记录；不记录 Cookie、凭据和查询参数。
+请连同 `Automatic domain menu binding` 的启动日志一起检查，定位后恢复原日志级别。
 
 **A: 检查以下几点：**
 1. 域名绑定是否已启用

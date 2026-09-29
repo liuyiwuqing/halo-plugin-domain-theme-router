@@ -59,14 +59,28 @@ public class DomainThemeRouteWebFilter implements AdditionalWebFilter {
         }
 
         var requestDomain = resolveRequestDomain(exchange);
+        log.debug("Domain theme request: path={}, host={}, forwardedHost={}, uriHost={}, resolvedDomain={}",
+                exchange.getRequest().getPath().value(),
+                exchange.getRequest().getHeaders().getFirst(HttpHeaders.HOST),
+                exchange.getRequest().getHeaders().getFirst(FORWARDED_HOST),
+                exchange.getRequest().getURI().getHost(), requestDomain);
         if (StringUtils.isBlank(requestDomain)) {
             return chain.filter(exchange);
         }
 
         return routeService.listEnabledRoutesAsList()
-                .flatMap(routes -> routeMatcher.match(requestDomain, routes)
-                        .map(route -> applyThemePreview(exchange, route))
-                        .orElseGet(() -> Mono.just(exchange)))
+                .flatMap(routes -> {
+                    var matched = routeMatcher.match(requestDomain, routes);
+                    if (matched.isEmpty()) {
+                        log.debug("No domain theme binding matched domain={}, enabledBindings={}",
+                                requestDomain, routes.size());
+                    }
+                    return matched.map(route -> {
+                        log.debug("Domain theme binding matched: domain={}, theme={}, menu={}",
+                                requestDomain, route.getThemeName(), route.getMenuName());
+                        return applyThemePreview(exchange, route);
+                    }).orElseGet(() -> Mono.just(exchange));
+                })
                 .onErrorResume(error -> {
                     log.warn("Failed to resolve domain theme route, fallback to activated theme.", error);
                     return Mono.just(exchange);
@@ -117,6 +131,7 @@ public class DomainThemeRouteWebFilter implements AdditionalWebFilter {
     }
 
     private ServerWebExchange withThemeContext(ServerWebExchange exchange, Object themeContext) {
+        log.debug("Applying domain theme with request ThemeContext");
         var request = exchange.getRequest().mutate()
                 .uri(UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
                         .replaceQueryParam(THEME_PREVIEW_PARAM)
@@ -131,6 +146,7 @@ public class DomainThemeRouteWebFilter implements AdditionalWebFilter {
     }
 
     private ServerWebExchange withPreviewTheme(ServerWebExchange exchange, String themeName) {
+        log.debug("Applying domain theme {} using preview-theme fallback", themeName);
         var uri = UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
                 .replaceQueryParam(THEME_PREVIEW_PARAM, themeName)
                 .build(true)

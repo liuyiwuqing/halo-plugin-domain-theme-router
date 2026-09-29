@@ -25,6 +25,7 @@ public class HaloMenuModelBridge {
 
     static final String BEAN_NAME = "domainThemeRouterMenuModelProvider";
     private static final String SPI = "run.halo.app.theme.ViewContextBasedVariablesAcquirer";
+    private static final String PLUGIN_MANAGER_SPI = "run.halo.app.plugin.SpringPluginManager";
 
     private final PluginWrapper pluginWrapper;
     private final DomainMenuModelProvider provider;
@@ -36,7 +37,10 @@ public class HaloMenuModelBridge {
     public void register() {
         try {
             var manager = pluginWrapper.getPluginManager();
-            var root = (ConfigurableApplicationContext) manager.getClass()
+            // HaloPluginManager is package-private. Its public method is not reflectively
+            // accessible from this plugin; invoke the method declared on the public interface.
+            var managerApi = Class.forName(PLUGIN_MANAGER_SPI, false, manager.getClass().getClassLoader());
+            var root = (ConfigurableApplicationContext) managerApi
                     .getMethod("getRootContext").invoke(manager);
             var factory = (DefaultListableBeanFactory) root.getBeanFactory();
             var spi = Class.forName(SPI, false, root.getClassLoader());
@@ -58,6 +62,7 @@ public class HaloMenuModelBridge {
             registeredFactory = factory;
             registeredProvider = proxy;
             active = true;
+            log.info("Automatic domain menu binding registered successfully.");
         } catch (ReflectiveOperationException | RuntimeException error) {
             // An incompatible Halo version must not disable existing domain-to-theme routing.
             log.error("Automatic domain menu binding is unavailable; domain theme routing remains active.", error);
