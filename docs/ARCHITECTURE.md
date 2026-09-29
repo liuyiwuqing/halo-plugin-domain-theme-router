@@ -95,7 +95,7 @@ public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
     // 3. 匹配并应用主题
     return routeService.listEnabledRoutesAsList()
             .flatMap(routes -> routeMatcher.match(requestDomain, routes)
-                    .map(route -> applyThemePreview(exchange, route.getThemeName()))
+                    .map(route -> applyThemePreview(exchange, route))
                     .orElseGet(() -> Mono.just(exchange)))
             .onErrorResume(error -> {
                 log.warn("Failed to resolve domain theme route, fallback to activated theme.", error);
@@ -206,6 +206,20 @@ public interface DomainThemeRouteService {
 
 主题上下文工厂，负责创建 Halo 请求级主题上下文。
 
+### 域名菜单模块
+
+`menu/DomainMenuBinding` 保存当前请求选中的菜单名称。只有命中启用绑定并成功找到主题后，过滤器才写入请求属性；主题缺失、空菜单及跳过路径不建立菜单上下文。
+
+`menu/HaloMenuModelBridge` 通过 Halo 注入的 `PluginWrapper` 获取插件管理器，并桥接其 `getRootContext()` 获取根上下文，以独立 Bean 名注册 `ViewContextBasedVariablesAcquirer` 动态代理。该 SPI 位于 application 模块，故按名称桥接，不打包 Halo application 类。插件上下文关闭时只注销自己注册的实例；接口不兼容时记录错误并保留原有域名主题路由。
+
+`getRootContext()` 必须从公开的 `SpringPluginManager` 接口获取反射方法。真实 `HaloPluginManager` 实现类是包可见的，直接对实现类反射调用其 public 方法仍会触发 `IllegalAccessException`。回归测试使用不同包中的非公开实现类复现该访问限制，不能只使用公开的模拟实现。
+
+`menu/DomainMenuModelProvider` 仅为具有菜单绑定的请求返回 `menuFinder` 模型变量。Halo 每次渲染查询变量提供者，模型变量覆盖视图的同名静态 Finder，因此无需修改主题和清理主题缓存。未绑定请求返回空模型。
+
+`menu/RequestMenuFinder` 是每次渲染独立创建的代理：`getPrimary()` 调用原生 Finder 的 `getByName(menuName)`，菜单缺失/读取失败则调用原生 `getPrimary()`；其他显式 `getByName(name)` 保持原样。原生主菜单的错误/空结果保持原语义。
+
+`menu/HaloMenuFinderAdapter` 封装原生 Finder 公共方法的反射调用，原样返回 Mono 中的对象。不替换系统 Finder Bean，不复制菜单树算法，不写系统 ConfigMap，无 ThreadLocal 或按主题名称缓存。
+
 ### 7. 数据模型
 
 #### DomainThemeRoute
@@ -216,6 +230,7 @@ public interface DomainThemeRouteService {
 public class DomainThemeRoute {
     private String domain;      // 访问域名
     private String themeName;   // 绑定主题名称
+    private String menuName;    // 可选的域名主菜单
     private Boolean enabled = true;  // 启用状态
     private String remark;      // 备注
 }
@@ -399,7 +414,8 @@ public int getOrder() {
 ### 主题验证
 
 ```java
-private Mono<ServerWebExchange> applyThemePreview(ServerWebExchange exchange, String themeName) {
+private Mono<ServerWebExchange> applyThemePreview(ServerWebExchange exchange, DomainThemeRoute route) {
+    var themeName = route.getThemeName();
     if (StringUtils.isBlank(themeName)) {
         return Mono.just(exchange);
     }
@@ -451,7 +467,9 @@ private Mono<ServerWebExchange> applyThemePreview(ServerWebExchange exchange, St
 - `DomainThemeRouteMatcherTest`: 域名匹配逻辑
 - `DomainThemeRouteServiceImplTest`: 路由服务实现
 - `HaloThemeContextFactoryTest`: 主题上下文创建
-- `DomainThemeRouteWebFilterTest`: WebFilter 集成测试
+- `DomainThemeRouteWebFilterTest`: WebFilter 集成测试，包含共享主题的并发域名菜单隔离、预览降级和跳过路径
+- `RequestMenuFinderTest`: 原生菜单对象保留、删除/错误回退、空菜单与显式其他菜单
+- `HaloMenuModelBridgeTest`: 请求模型注册、停用清理、同名 Bean 保护与不兼容降级
 
 ### 测试覆盖
 

@@ -53,6 +53,7 @@ Domain Theme Router 是一个 Halo CMS 插件，它可以让你：
 3. 填写配置信息：
    - **访问域名**：你的域名，如 `blog.example.com`
    - **绑定主题**：选择已安装的主题
+   - **绑定菜单（可选）**：选择此域名使用的主菜单；无需修改主题，留空保持原菜单
    - **启用状态**：是否激活此绑定
    - **备注**：可选，方便管理
 
@@ -79,9 +80,28 @@ server {
 }
 ```
 
+**多个域名共用同一个 Nginx / OpenResty / 1Panel 站点时，`X-Forwarded-Host` 必须使用 `$host`，不能使用 `$server_name` 或固定的主域名。** 例如 `server_name blog.example.com shop.example.com;` 中，`$server_name` 是该 server 配置的首个名称，访问 `shop.example.com` 时也可能向 Halo 传入 `blog.example.com`。插件优先读取 `X-Forwarded-Host`，因此即使 `Host $host` 正确，错误的转发头仍会让主题和菜单绑定一起失效。修正后检查 Nginx 配置并重载，无需重建 Halo 绑定或修改主题。
+
 ### 4. 验证配置
 
 访问你配置的域名，检查是否显示了对应的主题。
+
+---
+
+## 域名菜单绑定（无需修改主题）
+
+在每条域名绑定中选择「绑定菜单（可选）」并保存即可。例如 `blog.example.com → 主题 A → 博客菜单`、`docs.example.com → 主题 A → 文档菜单`。菜单仍在 Halo「外观 → 菜单」中统一管理。
+
+插件在当前页面的渲染模型中自动提供请求级 `menuFinder`，主题原有的 `menuFinder.getPrimary()` 调用会获得所选菜单。**不需要修改主题文件或接入专用 Finder**。菜单树、排序、注解和链接由 Halo 原生菜单服务生成。
+
+- 未命中域名、绑定停用、未指定菜单、绑定主题不存在时，继续使用原菜单。
+- 指定菜单被删除或读取失败时，回退到 Halo 原生主菜单；有效的空菜单保留为空。
+- 菜单按请求隔离，同一主题在不同域名可使用不同主菜单。
+- 插件不修改全站主菜单、菜单内容、主题配置或主题文件。停用插件时注销渲染桥接，恢复原生行为。
+- 此设置控制主题的**主菜单**。主题显式调用 `menuFinder.getByName(...)` 的其他菜单（如页脚）、写死在模板里的链接、自行通过 API 加载的导航保持原样，不会被强行覆盖。
+- CDN 页面缓存应按域名区分。历史配置不需要迁移。
+
+验证时分别访问两个绑定域名、一个未绑定域名，再清空菜单配置或停用绑定，确认主菜单随之恢复。
 
 ---
 
@@ -135,7 +155,28 @@ server {
 
 ## 常见问题
 
+### Q: 选了绑定菜单，但仍显示全站原菜单？
+
+先查看插件启用后的日志。正常注册时会输出：
+
+```text
+Automatic domain menu binding registered successfully.
+```
+
+早期菜单绑定实现从非公开的 `HaloPluginManager` 实现类调用 `getRootContext()`，可能出现
+`IllegalAccessException` 并输出 `Automatic domain menu binding is unavailable`，导致菜单绑定未生效。
+修复版通过公开的 `SpringPluginManager` 接口调用；更新插件并重新启用后确认上述成功日志，原绑定配置无需重建。
+
+若桥接已成功注册，检查绑定是否启用、菜单是否存在，以及主题是否通过原生主菜单接口读取导航。
+若连页面主题外观也没有切换，应按下一条检查域名匹配和主题配置；菜单桥接注册失败本身不会停用域名主题路由。
+
 ### Q: 为什么访问域名后还是显示默认主题？
+
+如果配置检查后仍无法定位，可临时将 Halo 的日志级别
+`logging.level.site.muyin.domainthemerouter` 设为 `DEBUG`，然后访问一次绑定域名。
+Docker 环境变量写法为 `LOGGING_LEVEL_SITE_MUYIN_DOMAINTHEMEROUTER=DEBUG`（修改后需重建 Halo 容器以应用环境变量）。
+相关日志包含 `Domain theme request`、`Domain theme binding matched` / `No domain theme binding matched`，以及使用请求主题上下文或预览降级的记录；不记录 Cookie、凭据和查询参数。
+请连同 `Automatic domain menu binding` 的启动日志一起检查，定位后恢复原日志级别。
 
 **A: 检查以下几点：**
 1. 域名绑定是否已启用
